@@ -1,0 +1,74 @@
+class Board {
+    field int cellsize;
+    field int offset;   
+    
+    constructor Board new() {
+        let cellsize = 60;
+        let offset = 30;
+        do drawGrid();
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void drawGrid() {
+        var int x1, y1, x2, y2;
+        
+        do Screen.setColor(true);
+
+        let x1 = offset;
+        let y1 = offset + cellsize;
+        let x2 = offset + (3 * cellsize);
+        let y2 = y1;
+        do Screen.drawLine(x1, y1, x2, y2);
+
+        let y1 = offset + (2 * cellsize);
+        let y2 = y1;
+        do Screen.drawLine(x1, y1, x2, y2);
+        
+        let x1 = offset + cellsize;
+        let y1 = offset;
+        let x2 = x1;
+        let y2 = offset + (3 * cellsize);
+        do Screen.drawLine(x1, y1, x2, y2);
+
+        let x1 = offset + (2 * cellsize);
+        let x2 = x1;
+        do Screen.drawLine(x1, y1, x2, y2);
+
+        return;
+    }
+
+    method void drawX(int row, int col) {
+        var int x1, y1, x2, y2;
+        var int padding;
+        let padding = 10;
+        
+        let x1 = (col * cellsize) + offset + padding;
+        let y1 = (row * cellsize) + offset + padding;
+        
+        let x2 = x1 + cellsize - (2 * padding);
+        let y2 = y1 + cellsize - (2 * padding);
+
+        do Screen.setColor(true);
+        do Screen.drawLine(x1, y1, x2, y2); 
+        do Screen.drawLine(x1, y2, x2, y1); 
+        return;
+    }
+
+    method void drawO(int row, int col) {
+        var int x, y, r;
+        
+        let x = (col * cellsize) + offset + (cellsize / 2);
+        let y = (row * cellsize) + offset + (cellsize / 2);
+        
+        let r = (cellsize / 2) - 10;
+        
+        do Screen.setColor(true);
+        do Screen.drawCircle(x, y, r);
+        return;
+    }
+}

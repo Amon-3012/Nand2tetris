@@ -1,0 +1,146 @@
+class TicTacToeGame {
+    field Board board;       
+    field Array gameState;   
+    field int currentPlayer; 
+    field int winner;        
+    field int moveCount;     
+
+    constructor TicTacToeGame new() {
+        let gameState = Array.new(9); 
+        let board = Board.new();
+        let currentPlayer = 1; 
+        let winner = 0;
+        let moveCount = 0;
+        
+        do printWelcome();
+        return this;
+    }
+    
+    method void dispose() {
+        do board.dispose();
+        do gameState.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void printWelcome() {
+        do Output.moveCursor(8, 30);
+        do Output.printString("Tic-Tac-Toe!");
+        do Output.moveCursor(10, 30);
+        do Output.printString("Player X's Turn");
+        do Output.moveCursor(12, 30);
+        do Output.printString("Use keys 1-9 to play.");
+        return;
+    }
+
+    method void run() {
+        var int key;
+        var int keynum;
+        var int index;
+        
+        while (winner = 0) {
+            let key = 0;
+            
+            while (key = 0) {
+                let key = Keyboard.keyPressed();
+            }
+            
+            if ((key > 48) & (key < 58)) {
+                let keynum = key - 48;
+                let index = keynum - 1; 
+
+                if (gameState[index] = 0) {
+                    do makeMove(index);
+                    do checkWin();
+                    
+                    if (winner = 0) {
+                        do switchPlayer();
+                    }
+                }
+            }
+
+            while (~(Keyboard.keyPressed() = 0)) {
+
+            }
+        }
+
+
+        do printWinner();
+        return;
+    }
+
+    method void makeMove(int index) {
+        var int row, col;
+        
+        let row = index / 3;
+        let col = index - (row * 3); 
+        
+        let gameState[index] = currentPlayer;
+        let moveCount = moveCount + 1;
+        
+        if (currentPlayer = 1) {
+            do board.drawX(row, col);
+        } else {
+            do board.drawO(row, col);
+        }
+        return;
+    }
+
+    method void switchPlayer() {
+        do Output.moveCursor(10, 30);
+        if (currentPlayer = 1) {
+            let currentPlayer = 2;
+            do Output.printString("Player O's Turn");
+        } else {
+            let currentPlayer = 1;
+            do Output.printString("Player X's Turn");
+        }
+        return;
+    }
+
+    method void printWinner() {
+        do Output.moveCursor(10, 30);
+        if (winner = 1) {
+            do Output.printString("Player X Wins! ");
+        }
+        else {
+            if (winner = 2) {
+                do Output.printString("Player O Wins! ");
+            }
+            else {
+                do Output.printString("It's a Draw!   ");
+            }
+        }
+        return;
+    }
+
+    method void checkWin() {
+        if (checkThree(0, 1, 2)) { return; }
+        if (checkThree(3, 4, 5)) { return; }
+        if (checkThree(6, 7, 8)) { return; }
+
+        if (checkThree(0, 3, 6)) { return; }
+        if (checkThree(1, 4, 7)) { return; }
+        if (checkThree(2, 5, 8)) { return; }
+        
+        if (checkThree(0, 4, 8)) { return; }
+        if (checkThree(2, 4, 6)) { return; }
+
+        if (moveCount = 9) {
+            let winner = 3; 
+        }
+        
+        return;
+    }
+
+    method boolean checkThree(int i1, int i2, int i3) {
+        if ((gameState[i1] = currentPlayer) &
+            (gameState[i2] = currentPlayer) &
+            (gameState[i3] = currentPlayer))
+        {
+            let winner = currentPlayer;
+            return true;
+        }
+        return false;
+    }
+}
